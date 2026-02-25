@@ -1,4 +1,4 @@
-name: Deploy FastAPI to VPS
+name: deploy.yml
 
 on:
   push:
