@@ -1,0 +1,33 @@
+name: Deploy FastAPI to VPS
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Sync to VPS
+      uses: appleboy/scp-action@v0.1.4
+      with:
+        host: ${{ secrets.VPS_HOST }}
+        username: ${{ secrets.VPS_USER }}
+        key: ${{ secrets.VPS_KEY }}
+        source: "."
+        target: "/var/www/Where-Waitlisting-Backend"
+
+    - name: Restart FastAPI service
+      uses: appleboy/ssh-action@v0.1.6
+      with:
+        host: ${{ secrets.VPS_HOST }}
+        username: ${{ secrets.VPS_USER }}
+        key: ${{ secrets.VPS_KEY }}
+        script: |
+          cd /var/www/Where-Waitlisting-Backend
+          . .venv/bin/activate
+          pip install -r requirements.txt
+          sudo systemctl restart where-waitlist
