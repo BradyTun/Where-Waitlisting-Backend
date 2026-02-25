@@ -88,3 +88,7 @@ async def get_waitlist(admin: str = Depends(verify_admin)):
         return {"entries": entries}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/health")
+async def health_check():
+    return {"status": "ok"}
